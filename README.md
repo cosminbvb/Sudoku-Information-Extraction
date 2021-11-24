@@ -29,7 +29,7 @@ which will determine each cell.
 
 Overlaying the lines with the image should look like this:
 
-![](https://github.com/cosminbvb/Sudoku-Information-Extraction/blob/main/documentation/overlay.png)
+![](https://github.com/cosminbvb/Sudoku-Information-Extraction/blob/main/screenshots/overlay.png)
 
 Then, we iterate through consecutive horizontal and vertical lines to find the bounding points of each cell.
   
