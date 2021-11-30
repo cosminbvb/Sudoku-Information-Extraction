@@ -184,6 +184,7 @@ def get_binary_labels(img):
 
 def get_digit_labels(img, model):
     cells = extract_cells(img)  # each cell is a 28x28 grayscale image
+    cells = np.array([cell / 255 for cell in cells])
     cells = cells.reshape((cells.shape[0], 28, 28, 1)).astype('float32')
     predictions = model.predict(cells)  # make predictions
     digit_labels = [np.argmax(prediction) for prediction in predictions]  # extract labels

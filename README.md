@@ -6,13 +6,13 @@ This repository consists of two tasks: extracting the information in **both clas
 Note: Each task also required two types of cell content classification: binary (empty / non-empty) and digit (0-9 where 0 represents an empty cell).
 
 ## Task 1 - Classic Sudoku
-* [0. How to run?](#run)
+* [0. Requirements & How to run?](#run)
 * [1. Detection](#detection)
 * [2. Cell extraction](#cell_extraction)
 * [3. Cell content binary classification](#cell_content_binary_classification)
 * [4. Cell content digit classification](#cell_content_digit_classification)
 ## Task 2 - Jigsaw Sudoku
-* [0. How to run?](#run)
+* [0. Requirements & How to run?](#run)
 * [1. Detection](#detection)
 * [2. Region extraction](#region_extraction)
 * [3. Cell extraction](#cell_extraction)
@@ -28,11 +28,20 @@ The following functions are used in both tasks and in order to avoid duplicate c
 * ```extract_cells(image)``` - returns an array of 81 28x28 images (cropped cells)
 * ```get_binary_labels(image)``` - returns 81 binary labels
 * ```get_digit_labels(image, model)``` - returns 81 0-9 labels
+
 <a name="run"/>
 
-### How to run?
+### Requirements & How to run?
 
-Call the function ``` get_results(input_dir, output_dir, number_of_samples) ``` where:
+Requirements:
+```
+cv2 >= 4.2.0
+numpy >= 1.21.0
+tensorflow >= 2.7.0
+```
+
+Open task1.ipynb or task2.ipynb, run all the code cells and
+call the function ``` get_results(input_dir, output_dir, number_of_samples) ``` where:
 
 - input_dir refers to the directory in which your original sudoku images are located.
 - output_dir refers to the directory in which you want your results
@@ -45,7 +54,7 @@ output_dir = 'results'
 number_of_samples = 20  # number of input images
 get_results(input_dir, output_dir, number_of_samples)
 ```
-*Make sure you are using the same image naming convension (0{x}.jpg if x < 10 otherwise {x}.jpg) or change the names in ``` get_results()``` .
+Note: Make sure you are using the same image naming convension (0{x}.jpg if x < 10 otherwise {x}.jpg) or change the names in ``` get_results()``` .
 
 
 <a name="detection"/>
@@ -97,7 +106,25 @@ After determining the bold lines, I stored them into two matrices:
 
 Finally, to determine the regions, I started a BFS from each yet unvisited cell and marked all the newly visited cells with a region number (by calling ```fill_region(start_i, start_j, region_number...)```). Before adding a neighbour in the queue, the function checks ```vertical_lines``` and ```horizontal_lines``` for illegal moves.
 
-TODO: 1.jpg -> region matrix
+Example:
+
+The region matrix for 
+
+![](https://github.com/cosminbvb/Sudoku-Information-Extraction/blob/main/datasets/antrenare/jigsaw/01.jpg)
+
+looks like this:
+
+```
+    [[1 2 2 2 2 2 2 2 2]
+     [1 1 1 3 3 3 2 4 4]
+     [1 3 3 3 5 5 5 4 4]
+     [1 1 6 3 3 3 5 4 4]
+     [1 1 6 6 6 5 5 4 4]
+     [6 6 6 6 7 5 5 8 4]
+     [9 9 7 6 7 7 5 8 8]
+     [9 9 7 7 7 7 8 8 8]
+     [9 9 9 9 9 7 8 8 8]]
+```
 
 
 <a name="cell_content_binary_classification"/>
