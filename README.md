@@ -1,29 +1,33 @@
 # Sudoku information extraction
 
 Given an image containing a sudoku, extract all the relevant information required to solve it.
-This repository consists of two tasks: extracting the information in **both classic and jigsaw sudoku**
+This repository consists of two tasks: extracting the information in **both classic and jigsaw sudoku**.
+
+Note: Each task also required two types of cell content classification: binary (empty / non-empty) and digit (0-9 where 0 represents an empty cell).
 
 ## Task 1 - Classic Sudoku
 * [0. How to run?](#run)
 * [1. Detection](#detection)
 * [2. Cell extraction](#cell_extraction)
-* [3. Cell content classification](#cell_content_classification)
-
+* [3. Cell content binary classification](#cell_content_binary_classification)
+* [4. Cell content digit classification](#cell_content_digit_classification)
 ## Task 2 - Jigsaw Sudoku
 * [0. How to run?](#run)
 * [1. Detection](#detection)
 * [2. Region extraction](#region_extraction)
 * [3. Cell extraction](#cell_extraction)
-* [4. Cell content classification](#cell_content_classification)
+* [4. Cell content binary classification](#cell_content_binary_classification)
+* [5. Cell content digit classification](#cell_content_digit_classification)
 
 ## Common functions
 The following functions are used in both tasks and in order to avoid duplicate code they were moved into ```helpers/utils.py```.
-* show_image(title, image)
-* normalize(image)
-* preprocess_image(image)
-* detect_sudoku(image)
-* extract_cells(image)
-
+* ```show_image(title, image)```
+* ```normalize(image)```
+* ```preprocess_image(image)``` - returns the coordinates of the sudoku rectangle
+* ```detect_sudoku(image)``` - returns the cropped and straightened sudoku rectangle
+* ```extract_cells(image)``` - returns an array of 81 28x28 images (cropped cells)
+* ```get_binary_labels(image)``` - returns 81 binary labels
+* ```get_digit_labels(image, model)``` - returns 81 0-9 labels
 <a name="run"/>
 
 ### How to run?
@@ -78,12 +82,11 @@ Then, we iterate through consecutive horizontal and vertical lines to find the b
 
 ### Region extraction
 
-This sub-task consists of finding the bold lines which define the regions. Due to the sample variation, I found it quite ineffective to apply filters and morphological operators that perfectly eliminate the thin lines while also keeping all the bold ones for each sample, even after normalization, thresholding, blurring, etc. Therefore, I chose to
-classify a line as either thin or bold by doing the following:
+This sub-task consists of finding the bold lines which define the regions. Due to the sample variation, I found it quite ineffective to apply filters and morphological operators that perfectly eliminate the thin lines while also keeping all the bold ones for each sample, even after normalization, thresholding, blurring, etc. Therefore, I chose to find the threshold separating the thin lines by the bold lines by doing the following:
 * converting the image to grayscale and normalizing
-* computing the pixel sum of all the lines
-* storing a minimum and a maximum sum (meaning the boldest line and the thinnest line)
-* if the pixel sum of our current line is closer to the sum of the boldest line, then it's bold, otherwise it's thin
+* computing the mean value of all the lines and storing them in an array
+* sorting the array and finding the biggest consecutive difference
+* set the threshold as thea mean of the two elements that determined the biggest difference
 
 Note: This approach scored 40 / 40.
 
@@ -96,13 +99,23 @@ Finally, to determine the regions, I started a BFS from each yet unvisited cell 
 
 TODO: 1.jpg -> region matrix
 
-<a name="cell_content_classification"/>
 
-### Cell content classification
+<a name="cell_content_binary_classification"/>
+
+### Cell content binary classification
+
+Firstly, I calculated the gradients of each cell with the Sobel filter. Then, I calculated the mean of each cell gradients. Idealy, an empty cell should have a mean close to 0. In order to find the threshold between the empty and non-empty cells I sorted the array with means and calculated the biggest consecutive difference. Once I found it, I set the threshold to to the mean of the two elements that determined the biggest difference.
+
+
+<a name="cell_content_digit_classification"/>
+
+### Cell content digit classification
 
 This sub-task consists of classifying the content of a cell, where classes range from 0 (empty cell) to 9.
 
-My approach was building and training a Convolutional Neural Network (the code can be found [here](https://github.com/cosminbvb/Sudoku-Information-Extraction/blob/main/cell_classification.ipynb)).
+The trained model is saved [here](https://github.com/cosminbvb/Sudoku-Information-Extraction/blob/main/saved_model/model.h5).
+
+My approach was building and training a Convolutional Neural Network (the code can be found [here](https://github.com/cosminbvb/Sudoku-Information-Extraction/blob/main/cell_digit_classification.ipynb)).
  
 The dataset I used was made for this exact task and contains around 3k samples. 
 You can find it on Kaggle: https://www.kaggle.com/kshitijdhama/printed-digits-dataset

@@ -149,3 +149,42 @@ def extract_cells(img):
             cell = img[x_min:x_max, y_min:y_max].copy()
             cells.append(cv.resize(cell, (28, 28)))  # resizing to 28x28 to match the cnn input size
     return np.array(cells)
+
+def sobel_gradients(img):
+    sobelX = cv.Sobel(img, ddepth=cv.CV_32F, dx=1, dy=0)
+    sobelY = cv.Sobel(img, ddepth=cv.CV_32F, dx=0, dy=1)
+    sobelX = cv.convertScaleAbs(sobelX)
+    sobelY = cv.convertScaleAbs(sobelY)
+    # combine the gradient representations into a single image
+    sobel = cv.addWeighted(sobelX, 0.5, sobelY, 0.5, 0)
+    return sobel
+
+def get_binary_labels(img):
+    cells = extract_cells(img)  # each cell is a 28x28 grayscale image
+    cells = [sobel_gradients(cell) for cell in cells]  # compute gradients for each cell
+    cells = np.array([int(cell.mean()) for cell in cells])  # compute the mean value for each cell gradients
+    # find the border between the two categories 
+    # (empty cell and non-empty cell) by sorting the
+    # array with means and calculating the biggest 
+    # consecutive difference. Once we found that, we
+    # set the threshold as the mean of the two elements that
+    # determined the biggest difference
+
+    sorted_cells = sorted(cells, reverse=True) 
+    index = 0
+    max_dif = 0
+    for i in range(len(sorted_cells) - 1):
+        dif = sorted_cells[i] - sorted_cells[i+1]
+        if dif > max_dif:
+            max_dif = dif
+            index = i
+    threshold = (sorted_cells[index] + sorted_cells[index+1]) / 2
+    binary_labels = [0 if cell < threshold else 1 for cell in cells]
+    return binary_labels
+
+def get_digit_labels(img, model):
+    cells = extract_cells(img)  # each cell is a 28x28 grayscale image
+    cells = cells.reshape((cells.shape[0], 28, 28, 1)).astype('float32')
+    predictions = model.predict(cells)  # make predictions
+    digit_labels = [np.argmax(prediction) for prediction in predictions]  # extract labels
+    return digit_labels
