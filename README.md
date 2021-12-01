@@ -4,6 +4,7 @@ Given an image containing a sudoku, extract all the relevant information require
 This repository consists of two tasks: extracting the information in **both classic and jigsaw sudoku**.
 
 Note: Each task also required two types of cell content classification: binary (empty / non-empty) and digit (0-9 where 0 represents an empty cell).
+
 Note: ```datasets/antrenare/``` contains 20 labeled classic sudoku images and 40 labeled jigsaw images
 
 ## Task 1 - Classic Sudoku
