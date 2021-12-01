@@ -22,8 +22,8 @@ Project structure:
     ├── task2.ipynb - task 2 source code
     ├── cell_digit_classification.ipynb - the code used to build and train the CNN
     ├── results
-    │   ├── clasic - empty (this is where task1 results will be stored)
-    │   └── jigsaw - empty (this is where task2 results will be stored)
+    │   ├── clasic - this is where task1 results will be stored
+    │   └── jigsaw - this is where task2 results will be stored
     └──
 
 ## Task 1 - Classic Sudoku
@@ -71,12 +71,15 @@ call the function ``` get_results(input_dir, output_dir, number_of_samples) ``` 
 Example:
 ```
 input_dir = 'datasets/antrenare/clasic'
-output_dir = 'results'
+output_dir = 'results/clasic'
 number_of_samples = 20  # number of input images
 get_results(input_dir, output_dir, number_of_samples)
 ```
 Note: Make sure you are using the same image naming convension (0{x}.jpg if x < 10 otherwise {x}.jpg) or change the names in ``` get_results()``` .
 
+**By default, the results will be stored in the results directory (see project structure). However, you can choose a custom output_dir and plug it into the get_results() function.**
+
+**The results of information extraction using binary classification are stored at {img_number}_predicted.txt and the result of information extraction using digit classification is stored at {img_number}_bonus_predicted.txt**
 
 <a name="detection"/>
 
