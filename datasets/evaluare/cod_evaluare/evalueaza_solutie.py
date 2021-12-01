@@ -15,7 +15,8 @@ def evaluate_results_task1(predictions_path,ground_truth_path,verbose = 0):
             #print(p_line)
             #print(gt_line)
             if (p_line[:10] != gt_line[:10]):
-                # print(f'task1 - wrong label at image {i}')
+                print(f'task1 - wrong label at image {i}, row {row}')
+                print(p_line[:10])
                 correct_flag = 0
         p.close()
         gt.close()
@@ -43,7 +44,8 @@ def evaluate_results_task1(predictions_path,ground_truth_path,verbose = 0):
             #print(p_line)
             #print(gt_line)
             if (p_line[:10] != gt_line[:10]):
-                # print(f'task1_bonus - wrong label at image {i}')
+                print(f'task1 - wrong label at image {i}, row {row}')
+                print(p_line[:10])                
                 correct_flag = 0
         p.close()
         gt.close()
@@ -73,7 +75,9 @@ def evaluate_results_task2(predictions_path,ground_truth_path,verbose = 0):
             #print(p_line)
             #print(gt_line)
             if (p_line[:19] != gt_line[:19]):
-                correct_flag = 0        
+                correct_flag = 0     
+                print(f'task2 - wrong label at image {i}, row {row}')
+                print(p_line[:19])   
         p.close()
         gt.close()
         
@@ -100,7 +104,10 @@ def evaluate_results_task2(predictions_path,ground_truth_path,verbose = 0):
             #print(p_line)
             #print(gt_line)
             if (p_line[:19] != gt_line[:19]):
-                correct_flag = 0        
+                correct_flag = 0     
+                print(f'task2 - wrong label at image {i}, row {row}')
+                print(p_line[:19])
+                print(gt_line[:19])   
         p.close()
         gt.close()
         

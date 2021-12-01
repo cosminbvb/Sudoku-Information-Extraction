@@ -4,6 +4,7 @@ Given an image containing a sudoku, extract all the relevant information require
 This repository consists of two tasks: extracting the information in **both classic and jigsaw sudoku**.
 
 Note: Each task also required two types of cell content classification: binary (empty / non-empty) and digit (0-9 where 0 represents an empty cell).
+Note: ```datasets/antrenare/``` contains 20 labeled classic sudoku images and 40 labeled jigsaw images
 
 ## Task 1 - Classic Sudoku
 * [0. Requirements & How to run?](#run)
@@ -20,7 +21,7 @@ Note: Each task also required two types of cell content classification: binary (
 * [5. Cell content digit classification](#cell_content_digit_classification)
 
 ## Common functions
-The following functions are used in both tasks and in order to avoid duplicate code they were moved into ```helpers/utils.py```.
+The following functions are used in both tasks and in order to avoid duplicate code were moved into ```helpers/utils.py```.
 * ```show_image(title, image)```
 * ```normalize(image)```
 * ```preprocess_image(image)``` - returns the coordinates of the sudoku rectangle
@@ -150,4 +151,6 @@ You can find it on Kaggle: https://www.kaggle.com/kshitijdhama/printed-digits-da
 All the samples conist of white digits on black background, while our original cells are the the opposite. 
 Therefore, before performing inference I inverted the cells with ```cv.bitwise_not()```.
 
-Note: The 0 class (empty cell) had around 18 samples while all the other classes had ~ 380 samples each so I balanced the dataset by adding another 350 empty cells.
+The 0 class (empty cell) had around 18 samples while all the other classes had ~ 380 samples each so I balanced the dataset by adding another 350 empty cells.
+
+**This model (```saved_model/model.h5```) achieved 100% accuracy on the train and validation printed digits dataset and 100% accuracy for all the cells in the 60 sudoku images found at ```datasets/antrenare/``` (4860 cells)**
