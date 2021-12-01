@@ -146,3 +146,8 @@ My approach was building and training a Convolutional Neural Network (the code c
  
 The dataset I used was made for this exact task and contains around 3k samples. 
 You can find it on Kaggle: https://www.kaggle.com/kshitijdhama/printed-digits-dataset
+
+All the samples conist of white digits on black background, while our original cells are the the opposite. 
+Therefore, before performing inference I inverted the cells with ```cv.bitwise_not()```.
+
+Note: The 0 class (empty cell) had around 18 samples while all the other classes had ~ 380 samples each so I balanced the dataset by adding another 350 empty cells.
