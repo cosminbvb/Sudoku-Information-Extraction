@@ -79,7 +79,7 @@ Note: Make sure you are using the same image naming convension (0{x}.jpg if x < 
 
 **By default, the results will be stored in the results directory (see project structure). However, you can choose a custom output_dir and plug it into the get_results() function.**
 
-**The results of information extraction using binary classification are stored at {img_number}_predicted.txt and the result of information extraction using digit classification is stored at {img_number}_bonus_predicted.txt**
+**The results of information extraction using binary classification are stored at {img_number}_predicted.txt and the results of information extraction using digit classification are stored at {img_number}_bonus_predicted.txt**
 
 <a name="detection"/>
 
