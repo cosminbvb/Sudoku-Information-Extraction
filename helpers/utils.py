@@ -183,9 +183,14 @@ def get_binary_labels(img):
     return binary_labels
 
 def get_digit_labels(img, model):
+    # print("get_digit_labels call")
     cells = extract_cells(img)  # each cell is a 28x28 grayscale image
+    cells = [cv.bitwise_not(cell) for cell in cells]
+    # the digits dataset has white digits and black background
+    # so I chose to invert the colors to match the input given to the cnn at training
     cells = np.array([cell / 255 for cell in cells])
     cells = cells.reshape((cells.shape[0], 28, 28, 1)).astype('float32')
+    
     predictions = model.predict(cells)  # make predictions
     digit_labels = [np.argmax(prediction) for prediction in predictions]  # extract labels
     return digit_labels
