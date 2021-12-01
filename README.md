@@ -5,7 +5,26 @@ This repository consists of two tasks: extracting the information in **both clas
 
 Note: Each task also required two types of cell content classification: binary (empty / non-empty) and digit (0-9 where 0 represents an empty cell).
 
-Note: ```datasets/antrenare/``` contains 20 labeled classic sudoku images and 40 labeled jigsaw images
+Project structure:
+
+    ├── datasets
+    │   ├── antrenare
+    |       ├── clasic - 20 labeled classic sudoku images
+    |       └── jigsaw - 40 labeled jigsaw sudoku images
+    │   └── evaluare
+    |       └── cod_evaluare
+    |           └── evalueaza_solutie.py  - results evaluation code
+    ├── helpers
+    │   └── utils.py - contains all the common code used in both tasks
+    ├── saved_model
+    │   └── model.h5 - trained model
+    ├── task1.ipynb - task 1 source code
+    ├── task2.ipynb - task 2 source code
+    ├── cell_digit_classification.ipynb - the code used to build and train the CNN
+    ├── results
+    │   ├── clasic - empty (this is where task1 results will be stored)
+    │   └── jigsaw - empty (this is where task2 results will be stored)
+    └──
 
 ## Task 1 - Classic Sudoku
 * [0. Requirements & How to run?](#run)
@@ -93,17 +112,17 @@ Then, we iterate through consecutive horizontal and vertical lines to find the b
 
 ### Region extraction
 
-This sub-task consists of finding the bold lines which define the regions. Due to the sample variation, I found it quite ineffective to apply filters and morphological operators that perfectly eliminate the thin lines while also keeping all the bold ones for each sample, even after normalization, thresholding, blurring, etc. Therefore, I chose to find the threshold separating the thin lines by the bold lines by doing the following:
+This sub-task consists of finding the bold lines which define the regions. 
+
+Due to the sample variation, I found it quite ineffective to apply filters and morphological operators that perfectly eliminate the thin lines while also keeping all the bold ones for each sample, even after normalization, thresholding, blurring, etc. Therefore, I chose to find the threshold separating the thin lines by the bold lines by doing the following:
 * converting the image to grayscale and normalizing
 * computing the mean value of all the lines and storing them in an array
 * sorting the array and finding the biggest consecutive difference
 * set the threshold as thea mean of the two elements that determined the biggest difference
 
-Note: This approach scored 40 / 40.
+Note: This approach correctly labeled the regions in all the training jigsaw images.
 
-Note: This approach uses a sliding-window approach with an error (padding) of 5px.
-
-After determining the bold lines, I stored them into two matrices:
+After calculating the coordinates of each line, I determined the bold ones and stored them into two matrices:
 ```vertical_lines``` and ```horizontal_lines```.
 
 Finally, to determine the regions, I started a BFS from each yet unvisited cell and marked all the newly visited cells with a region number (by calling ```fill_region(start_i, start_j, region_number...)```). Before adding a neighbour in the queue, the function checks ```vertical_lines``` and ```horizontal_lines``` for illegal moves.
